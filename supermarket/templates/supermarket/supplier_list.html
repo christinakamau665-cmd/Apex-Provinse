@@ -1,0 +1,54 @@
+{% extends 'supermarket/base.html' %}
+
+{% block content %}
+<h1><i class="fas fa-store me-2" style="color:var(--brand-purple);"></i>Elshadai supermarket</h1>
+<div class="page-header">
+    <h2 class="page-title"><i class="fas fa-truck-fast me-2" style="color:var(--brand-purple);"></i>Suppliers</h2>
+    <a href="{% url 'supplier_add' %}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Add Supplier</a>
+</div>
+
+<div class="data-card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th><i class="fas fa-industry me-1"></i>Supplier Name</th>
+                <th><i class="fas fa-user-tie me-1"></i>Contact Person</th>
+                <th><i class="fas fa-phone me-1"></i>Phone</th>
+                <th><i class="fas fa-envelope me-1"></i>Email</th>
+                <th><i class="fas fa-circle-check me-1"></i>Status</th>
+                <th><i class="fas fa-box-open me-1"></i>Products</th>
+                <th><i class="fas fa-gear me-1"></i>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supplier in suppliers %}
+            <tr>
+                <td style="font-weight:500;"><i class="fas fa-building me-2" style="color:var(--brand-purple);opacity:0.6;"></i>{{ supplier.name }}</td>
+                <td>{{ supplier.contact_person|default:"—" }}</td>
+                <td style="color:var(--muted);"><i class="fas fa-phone-flip me-1"></i>{{ supplier.phone|default:"—" }}</td>
+                <td style="color:var(--muted);"><i class="fas fa-at me-1"></i>{{ supplier.email|default:"—" }}</td>
+                <td>
+                    {% if supplier.is_active %}
+                    <span class="badge-ok"><i class="fas fa-check me-1"></i>Active</span>
+                    {% else %}
+                    <span class="badge-low"><i class="fas fa-xmark me-1"></i>Inactive</span>
+                    {% endif %}
+                </td>
+                <td><span class="badge-ok">{{ supplier.product_count }}</span></td>
+                <td>
+                    <a href="{% url 'supplier_edit' supplier.pk %}" class="action-btn" title="Edit"><i
+                            class="fas fa-pen"></i></a>
+                    <a href="{% url 'supplier_delete' supplier.pk %}" class="action-btn danger ms-1" title="Delete"><i
+                            class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="color:var(--muted);text-align:center;padding:40px;">No suppliers found. <a
+                        href="{% url 'supplier_add' %}" style="color:var(--green);">Add one</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

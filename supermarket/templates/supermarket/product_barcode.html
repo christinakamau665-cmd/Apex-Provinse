@@ -1,0 +1,216 @@
+{% extends 'supermarket/base.html' %}
+
+{% block content %}
+<div class="dashboard-content-wrapper">
+    <div class="page-header">
+        <h2 class="page-title">Barcode — {{ product.name }}</h2>
+        <div class="d-flex gap-2">
+            <a href="{% url 'customer_chat' %}?product={{ product.pk }}" class="btn btn-outline-primary">
+                <i class="fas fa-comments me-2"></i>Chat about this product
+            </a>
+            <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Products
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-5">
+            <div class="data-card">
+                <div class="data-card-header">Barcode Preview</div>
+                <div class="p-4 text-center">
+                    <div style="background:#fff; border-radius:10px; padding:24px; display:inline-block; min-width:240px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                        {% if product.barcode_image %}
+                            <img src="{{ product.barcode_image.url }}" alt="Barcode" style="max-width:100%; height:auto; display:block; margin:0 auto;">
+                        {% else %}
+                            <div style="color:#888; padding:20px; font-style:italic;">Barcode image not generated yet.</div>
+                        {% endif %}
+                        <div style="color:#111; font-family:monospace; font-size:0.85rem; margin-top:8px;">
+                            {{ product.barcode_number }}
+                        </div>
+                        <div style="color:#333; font-size:0.95rem; font-weight:600; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 220px;">
+                            {{ product.name }}
+                        </div>
+                        <div style="color:#c026d3; font-weight:700; font-size:0.9rem; margin-top: 2px;">
+                            KES {{ product.price }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-card mt-3">
+                <div class="data-card-header">Print Copies</div>
+                <div class="p-3 d-flex gap-2">
+                    <input type="number" id="copyCount" class="form-control" value="1" min="1" max="50" style="max-width:100px;">
+                    <button onclick="printCopies()" class="btn btn-success flex-grow-1">
+                        <i class="fas fa-print me-2"></i>Print Labels
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="data-card">
+                <div class="data-card-header">Product Info</div>
+                <div class="p-3">
+                    <table style="width:100%; font-size:0.9rem; border-collapse:collapse;">
+                        <tr style="border-bottom:1px solid var(--border);">
+                            <td style="color:var(--muted); padding:12px 0; width:30%;">Name</td>
+                            <td style="font-weight:500; padding:12px 0;">{{ product.name }}</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid var(--border);">
+                            <td style="color:var(--muted); padding:12px 0;">SKU</td>
+                            <td style="font-family:monospace; padding:12px 0;">{{ product.sku }}</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid var(--border);">
+                            <td style="color:var(--muted); padding:12px 0;">Barcode</td>
+                            <td style="font-family:monospace; padding:12px 0;">{{ product.barcode_number }}</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid var(--border);">
+                            <td style="color:var(--muted); padding:12px 0;">Category</td>
+                            <td style="padding:12px 0;">{{ product.category.name|default:"—" }}</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid var(--border);">
+                            <td style="color:var(--muted); padding:12px 0;">Price</td>
+                            <td style="color:var(--green); font-weight:600; padding:12px 0;">KES {{ product.price }}</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--muted); padding:12px 0;">Stock Status</td>
+                            <td style="padding:12px 0;">
+                                {% if product.is_low_stock %}
+                                    <span class="badge-low">{{ product.stock_quantity }} ⚠️ Low Stock</span>
+                                {% else %}
+                                    <span class="badge-ok">{{ product.stock_quantity }} Available</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="barcodePrintTarget"></div>
+
+<style>
+    /* Always hide the print target during standard screen display */
+    #barcodePrintTarget {
+        display: none !important;
+    }
+
+    /* Print settings triggered via system dialog */
+    @media print {
+        /* If we are currently printing, hide EVERYTHING inside the main dashboard layout */
+        body.printing-labels .dashboard-content-wrapper,
+        body.printing-labels header,
+        body.printing-labels nav,
+        body.printing-labels sidebar,
+        body.printing-labels .sidebar {
+            display: none !important;
+        }
+
+        /* Show only the targeted print container */
+        body.printing-labels #barcodePrintTarget {
+            display: block !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white !important;
+        }
+
+        .barcode-label {
+            display: block;
+            text-align: center;
+            width: 240px;
+            padding: 15px;
+            margin: 0 auto;
+            page-break-inside: avoid;
+            page-break-after: always;
+            background: white !important;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .store-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: black;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            letter-spacing: 0.8px;
+        }
+
+        .barcode-img {
+            max-width: 180px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .barcode-num {
+            font-size: 11px;
+            font-family: monospace;
+            color: black;
+            margin-top: 5px;
+        }
+
+        .product-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: black;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+        }
+
+        .product-price {
+            font-size: 13px;
+            font-weight: bold;
+            color: black;
+            margin-top: 3px;
+        }
+    }
+</style>
+
+<script>
+    function printCopies() {
+        const count = parseInt(document.getElementById('copyCount').value) || 1;
+        const target = document.getElementById('barcodePrintTarget');
+        target.innerHTML = ''; // Clear previous preview
+        
+        const imgSrc = "{% if product.barcode_image %}{{ product.barcode_image.url }}{% endif %}";
+        const barcodeNum = "{{ product.barcode_number|default:product.sku }}";
+        const productName = "{{ product.name|escapejs }}";
+        const productPrice = "{{ product.price }}";
+
+        // 1. Build the print content
+        let htmlContent = '';
+        for (let i = 0; i < count; i++) {
+            htmlContent += `
+                <div class="barcode-label">
+                    <div class="store-title">APEX PROVISIONS</div>
+                    ${imgSrc ? `<img src="${imgSrc}" class="barcode-img">` : ''}
+                    <div class="barcode-num">${barcodeNum}</div>
+                    <div class="product-name">${productName}</div>
+                    <div class="product-price">KES ${productPrice}</div>
+                </div>
+            `;
+        }
+        target.innerHTML = htmlContent;
+
+        // 2. Add printing state to body (CSS will immediately hide page layout and show only labels)
+        document.body.classList.add('printing-labels');
+
+        // 3. Trigger printing with a minor delay so browser updates layout representation
+        setTimeout(() => {
+            window.print();
+            
+            // 4. Remove printing state to instantly restore the dashboard view safely
+            document.body.classList.remove('printing-labels');
+            target.innerHTML = ''; // Clean target
+        }, 150);
+    }
+</script>
+{% endblock %}

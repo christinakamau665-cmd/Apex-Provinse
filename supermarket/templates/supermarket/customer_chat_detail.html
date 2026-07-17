@@ -1,0 +1,99 @@
+{% extends 'supermarket/base.html' %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="page-title">Inquiry Details</h2>
+        <span style="color: var(--muted); font-size: 0.85rem;">Responding to {{ chat.customer_name }}</span>
+    </div>
+    <a href="{% url 'customer_chat_list' %}" class="btn btn-outline-secondary btn-sm" style="font-weight: 600; border-radius: 6px; text-decoration: none;">
+        Back to Inbox
+    </a>
+</div>
+
+<div class="row mt-3 g-4">
+    <div class="col-md-6">
+        <div class="data-card h-100">
+            <div class="data-card-header">Customer Message</div>
+            <div class="p-4">
+                <div class="mb-3">
+                    <strong style="color: var(--body-loud-color);">Customer Name:</strong>
+                    <div style="font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-top: 2px;">
+                        {{ chat.customer_name }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <strong style="color: var(--body-loud-color);">Contact Details:</strong>
+                    <div class="mt-1" style="font-weight: 500;">
+                        {% if chat.customer_phone %}<div>📞 {{ chat.customer_phone }}</div>{% endif %}
+                        {% if chat.customer_email %}<div>✉️ {{ chat.customer_email }}</div>{% endif %}
+                    </div>
+                </div>
+
+                {% if chat.product %}
+                <div class="mb-3">
+                    <strong style="color: var(--body-loud-color);">Regarding Product:</strong> 
+                    <div class="mt-1">
+                        <span class="badge-ok" style="background-color: var(--darkened-bg); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-weight: 600; display: inline-block;">
+                            {{ chat.product.name }} (KES {{ chat.product.price }})
+                        </span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <strong style="color: var(--body-loud-color);">Subject:</strong>
+                    <div class="mt-1" style="font-weight: 500; font-size: 1rem;">
+                        {{ chat.subject|default:"Order Inquiry" }}
+                    </div>
+                </div>
+
+                <hr style="border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+                <div class="mb-3">
+                    <strong style="color: var(--body-loud-color);">Message Details:</strong>
+                    <blockquote class="mt-2 p-3" style="background: var(--darkened-bg); border-left: 4px solid var(--primary); border-radius: 6px; color: var(--body-fg); line-height: 1.5;">
+                        {{ chat.message|linebreaksbr }}
+                    </blockquote>
+                </div>
+
+                <div class="text-muted" style="font-size: 0.8rem; font-weight: 500;">
+                    Received: {{ chat.created_at|date:"F d, Y, h:i A" }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="data-card h-100">
+            <div class="data-card-header">Manager Response & Actions</div>
+            <div class="p-4">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_status" class="form-label" style="font-weight: 600; color: var(--body-loud-color);">Update Inquiry Status</label>
+                        <select name="status" id="id_status" class="form-select" style="border-radius: 8px; border: 1px solid var(--border-color); padding: 8px 12px;">
+                            <option value="new" {% if chat.status == 'new' %}selected{% endif %}>New</option>
+                            <option value="in_progress" {% if chat.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                            <option value="responded" {% if chat.status == 'responded' %}selected{% endif %}>Responded</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_manager_response" class="form-label" style="font-weight: 600; color: var(--body-loud-color);">Reply Text</label>
+                        <textarea name="manager_response" id="id_manager_response" rows="7" class="form-control" placeholder="Write your response message here..." style="border-radius: 8px; border: 1px solid var(--border-color); padding: 12px;" required>{{ chat.manager_response|default:"" }}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="submit" class="btn btn-primary px-4" style="font-weight: 600; border-radius: 8px; padding: 10px 20px;">
+                            Save & Update Status
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

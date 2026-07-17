@@ -1,0 +1,14 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Apex Provisions logo">
+  <defs>
+    <linearGradient id="apexGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#7e22ce"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#apexGrad)"/>
+  <!-- Apex / peak monogram -->
+  <path d="M32 14 L47 42 H17 Z" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M26 30 H38" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  <!-- Shelf / provisions line -->
+  <rect x="15" y="47" width="34" height="4" rx="2" fill="#ffffff" fill-opacity="0.9"/>
+</svg>

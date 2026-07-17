@@ -1,0 +1,146 @@
+{% extends 'supermarket/base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title"><i class="fas fa-chart-line me-2" style="color:var(--brand-purple);"></i>Sales Records</h2>
+    <a href="{% url 'sale_add' %}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Record Sale</a>
+</div>
+
+<!-- Total Revenue Card -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(177,16,187,0.12);color:#b110bb;"><i class="fas fa-wallet"></i></div>
+            <div class="stat-value" style="color:#b110bb;">KES {{ total|floatformat:2 }}</div>
+            <div class="stat-label"><i class="fas fa-coins me-1"></i>Total Revenue</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-receipt"></i></div>
+            <div class="stat-value">{{ sales|length }}</div>
+            <div class="stat-label"><i class="fas fa-list-check me-1"></i>Total Transactions</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(46,125,50,0.12);color:var(--green);"><i class="fas fa-arrow-trend-up"></i></div>
+            <div class="stat-value" style="color:var(--green);">{{ chart_days_count }} day{{ chart_days_count|pluralize }}</div>
+            <div class="stat-label"><i class="fas fa-calendar-days me-1"></i>Sales History Span</div>
+        </div>
+    </div>
+</div>
+
+<!-- Real, live-data charts -->
+<div class="row g-3 mb-4">
+    <div class="col-md-7">
+        <div class="data-card">
+            <div class="data-card-header"><i class="fas fa-chart-area me-2" style="color:var(--brand-purple);"></i>Revenue Trend</div>
+            <div style="padding: 18px 20px;">
+                <canvas id="revenueChart" height="130"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="data-card">
+            <div class="data-card-header"><i class="fas fa-boxes-stacked me-2" style="color:var(--brand-purple);"></i>Top Products (Qty Sold)</div>
+            <div style="padding: 18px 20px;">
+                <canvas id="productsChart" height="130"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="data-card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th><i class="fas fa-box me-1"></i>Product</th>
+                <th><i class="fas fa-cubes me-1"></i>Qty Sold</th>
+                <th><i class="fas fa-tag me-1"></i>Unit Price</th>
+                <th><i class="fas fa-sack-dollar me-1"></i>Total</th>
+                <th><i class="fas fa-user me-1"></i>Cashier</th>
+                <th><i class="fas fa-clock me-1"></i>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales %}
+            <tr>
+                <td style="font-weight:500;"><i class="fas fa-basket-shopping me-2" style="color:var(--brand-purple);opacity:0.6;"></i>{{ sale.product.name }}</td>
+                <td>{{ sale.quantity_sold }}</td>
+                <td>KES {{ sale.unit_price }}</td>
+                <td style="color:var(--green);font-weight:600;">KES {{ sale.total_amount }}</td>
+                <td style="color:var(--muted);"><i class="fas fa-circle-user me-1"></i>{{ sale.cashier|default:"—" }}</td>
+                <td style="color:var(--muted);font-size:0.85rem;">{{ sale.sale_date|date:"M d, Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" style="color:var(--muted);text-align:center;padding:40px;">No sales recorded yet. <a href="{% url 'sale_add' %}" style="color:var(--green);">Record first sale</a></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function () {
+    const labels = {{ chart_labels_json|safe }};
+    const values = {{ chart_values_json|safe }};
+    const productLabels = {{ product_labels_json|safe }};
+    const productValues = {{ product_values_json|safe }};
+
+    const revenueCtx = document.getElementById('revenueChart');
+    if (revenueCtx) {
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue (KES)',
+                    data: values,
+                    borderColor: '#b110bb',
+                    backgroundColor: 'rgba(177,16,187,0.12)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#b110bb'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(177,16,187,0.08)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    const productsCtx = document.getElementById('productsChart');
+    if (productsCtx) {
+        new Chart(productsCtx, {
+            type: 'bar',
+            data: {
+                labels: productLabels,
+                datasets: [{
+                    label: 'Qty Sold',
+                    data: productValues,
+                    backgroundColor: 'rgba(177,16,187,0.55)',
+                    borderRadius: 6,
+                    maxBarThickness: 28
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(177,16,187,0.08)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+})();
+</script>
+{% endblock %}

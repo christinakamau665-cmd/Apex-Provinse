@@ -1,0 +1,269 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In · Apex Provisions</title>
+    <link rel="icon" type="image/png" href="https://images.unsplash.com/photo-1746422125977-7a5a63f052e7?w=64&auto=format&fit=crop&q=80&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODV8fHB1cnBsZSUyMGFuZCUyMHdoaXRlJTIwbG9nb3xlbnwwfHwwfHx8MA%3D%3D">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+        :root {
+            --brand-purple: #b110bb;
+            --brand-purple-dark: #850c8d;
+            --brand-purple-light: #b110bb;
+            --bg: #f3f0f7;
+            --card: #ffffff;
+            --text: #2f1d4a;
+            --muted: #796893;
+            --border: #dfd5ed;
+            --danger: #dc2626;
+            --danger-bg: rgba(220, 38, 38, 0.08);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 24px;
+        }
+
+        /* Soft ambient brand-purple glow, purely decorative */
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.35;
+            z-index: 0;
+        }
+        body::before {
+            width: 420px;
+            height: 420px;
+            background: var(--brand-purple-light);
+            top: -140px;
+            left: -120px;
+        }
+        body::after {
+            width: 380px;
+            height: 380px;
+            background: var(--brand-purple-dark);
+            bottom: -160px;
+            right: -100px;
+        }
+
+        .login-card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 380px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 20px 40px -12px rgba(177,16,187, 0.25);
+            padding: 36px 32px 32px;
+            animation: rise 0.45s ease;
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .brand img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
+
+        .brand h1 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            color: var(--brand-purple);
+        }
+        .brand h1 span { color: var(--text); }
+
+        .subtitle {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin: 0 0 28px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 0.92rem;
+            font-family: inherit;
+            color: var(--text);
+            background: #fff;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .input-wrap input:focus {
+            outline: none;
+            border-color: var(--brand-purple);
+            box-shadow: 0 0 0 3px rgba(177,16,187, 0.15);
+        }
+
+        .toggle-pw {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: inherit;
+            padding: 4px;
+        }
+        .toggle-pw:hover { color: var(--brand-purple); }
+
+        .row-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            font-size: 0.84rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--muted);
+            cursor: pointer;
+            user-select: none;
+        }
+        .remember-me input { accent-color: var(--brand-purple); width: 15px; height: 15px; cursor: pointer; }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 9px;
+            background: var(--brand-purple);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+        }
+        .btn-login:hover { background: var(--brand-purple-dark); }
+        .btn-login:active { transform: translateY(1px); }
+
+        .alert-error {
+            background: var(--danger-bg);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            color: var(--danger);
+            font-size: 0.84rem;
+            padding: 10px 12px;
+            border-radius: 9px;
+            margin-bottom: 18px;
+        }
+
+        .footnote {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 0.76rem;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="brand">
+            <img src="https://images.unsplash.com/photo-1746422125977-7a5a63f052e7?w=120&h=120&auto=format&fit=crop&q=80&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODV8fHB1cnBsZSUyMGFuZCUyMHdoaXRlJTIwbG9nb3xlbnwwfHwwfHx8MA%3D%3D" alt="Apex Provisions">
+            <h1>Apex <span>Provisions</span></h1>
+        </div>
+        <p class="subtitle">Sign in to the management portal</p>
+
+        {% if form.non_field_errors %}
+        <div class="alert-error">
+            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="field">
+                <label for="id_username">Username</label>
+                <div class="input-wrap">
+                    <input type="text" name="username" id="id_username" autocomplete="username" autofocus required
+                           value="{{ form.username.value|default_if_none:'' }}">
+                </div>
+            </div>
+            <div class="field">
+                <label for="id_password">Password</label>
+                <div class="input-wrap">
+                    <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+                    <button type="button" class="toggle-pw" onclick="togglePassword()">SHOW</button>
+                </div>
+            </div>
+
+            <div class="row-between">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember_me">
+                    Remember me
+                </label>
+            </div>
+
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+
+        <p class="footnote">Restricted access &middot; Apex Provisions staff only</p>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('id_password');
+            const btn = document.querySelector('.toggle-pw');
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            btn.textContent = isHidden ? 'HIDE' : 'SHOW';
+        }
+    </script>
+</body>
+</html>

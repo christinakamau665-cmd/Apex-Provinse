@@ -1,0 +1,234 @@
+/* ==========================================================================
+   1. PURPLE & RED THEME OVERRIDE FOR DJANGO ADMIN
+   ========================================================================== */
+
+:root {
+    --primary: #b55fe6; /* Vibrant neon purple for interactive links */
+    --secondary: #9c3cd1;
+    --accent: #ff3b30; /* Bold brand red */
+    --primary-fg: #fff;
+
+    --body-fg: #f0e6fc; /* Soft light lavender-white text */
+    --body-bg: #120924; /* Deep purple background */
+    --body-quiet-color: #a692c2; /* Soft lavender for muted details */
+    --body-loud-color: #ffffff;
+
+    --header-color: #ffffff;
+    --header-branding-color: #ff3b30;
+    --header-bg: #0b0417; /* Very deep midnight purple sidebar */
+    --header-link-color: #a692c2;
+
+    --breadcrumbs-fg: #a692c2;
+    --breadcrumbs-link-fg: #f0e6fc;
+    --breadcrumbs-bg: #1d1035; /* Violet card background */
+
+    --link-fg: #b55fe6;
+    --link-hover-color: #ff3b30;
+    --link-selected-fg: #ff3b30;
+
+    --hairline-color: #3b255c; /* Muted violet borders */
+    --border-color: #3b255c;
+
+    --error-fg: #ff5050;
+
+    --message-success-bg: rgba(0, 200, 81, 0.15);
+    --message-warning-bg: rgba(255, 171, 0, 0.15);
+    --message-error-bg: rgba(255, 80, 80, 0.15);
+
+    --darkened-bg: #160c2d;
+    --selected-bg: rgba(181, 95, 230, 0.15);
+    --selected-row: rgba(255, 59, 48, 0.1);
+
+    --button-fg: #fff;
+    --button-bg: #ff3b30; /* Brand Red primary buttons */
+    --button-hover-bg: #e02d22;
+    --default-button-bg: #ff3b30;
+    --default-button-hover-bg: #e02d22;
+    --close-button-bg: #3b255c;
+    --close-button-hover-bg: #1d1035;
+    --delete-button-bg: #ff5050;
+    --delete-button-hover-bg: #d32f2f;
+
+    --object-tools-fg: #fff;
+    --object-tools-bg: #00c851;
+    --object-tools-hover-bg: #009638;
+
+    --font-family-primary: 'DM Sans', -apple-system, sans-serif;
+    --font-family-monospace: 'Space Mono', monospace;
+}
+
+body {
+    background-color: var(--body-bg) !important;
+    color: var(--body-fg) !important;
+}
+
+body, input, textarea, select, .button, button {
+    font-family: var(--font-family-primary) !important;
+}
+
+#header {
+    background: linear-gradient(135deg, #0b0417 0%, #1d1035 100%) !important;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(11, 4, 23, 0.5);
+}
+
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+    font-family: 'Syne', sans-serif !important;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--accent) !important; /* APEX branding in brand-red */
+}
+
+div.breadcrumbs {
+    background: var(--breadcrumbs-bg) !important;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 500;
+}
+
+.module h2, .module caption, .inline-group h2 {
+    background: linear-gradient(135deg, #1d1035 0%, #3b255c 100%) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    color: #f0e6fc !important;
+    font-weight: 600;
+}
+
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(255, 59, 48, 0.2);
+}
+
+.button.default, input[type=submit].default, .submit-row input.default {
+    box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+}
+
+#changelist-filter {
+    background-color: var(--breadcrumbs-bg) !important;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+#changelist-filter h2 {
+    background: var(--border-color) !important;
+    color: var(--body-fg) !important;
+    border-radius: 12px 12px 0 0;
+}
+
+.results {
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+table thead th {
+    background: var(--darkened-bg) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.dashboard .module table th, .dashboard .module table td {
+    font-family: var(--font-family-primary);
+}
+
+a:link, a:visited {
+    color: var(--link-fg);
+}
+
+.object-tools a.addlink {
+    background: var(--object-tools-bg);
+    border-radius: 100px;
+    font-weight: 600;
+}
+
+
+/* ==========================================================================
+   2. SOPHISTICATED FRONTEND OVERLAYS (CUSTOMER CHAT / FORMS)
+   ========================================================================== */
+
+/* Dark purple radial gradient to eliminate pure black screens */
+.customer-chat-body, 
+body:has(.page-title) {
+    background: radial-gradient(circle at 10% 20%, #1d1035 0%, #120924 100%) !important;
+    color: #f0e6fc !important;
+}
+
+/* Glassmorphism Cards Tinted in Deep Purple */
+.data-card {
+    background: rgba(29, 16, 53, 0.7) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(181, 95, 230, 0.15) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(11, 4, 23, 0.6) !important;
+    overflow: hidden;
+}
+
+.data-card-header {
+    background: rgba(181, 95, 230, 0.1) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(181, 95, 230, 0.15) !important;
+    font-weight: 600;
+    padding: 1.2rem 1.5rem !important;
+    font-size: 1.1rem;
+}
+
+/* Violet input designs */
+.form-control, .form-select {
+    background-color: rgba(18, 9, 36, 0.85) !important;
+    border: 1px solid rgba(181, 95, 230, 0.25) !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control::placeholder {
+    color: rgba(166, 146, 194, 0.45) !important;
+}
+
+/* Red accent glow on input focus */
+.form-control:focus, .form-select:focus {
+    background-color: #1d1035 !important;
+    border-color: #ff3b30 !important;
+    box-shadow: 0 0 12px rgba(255, 59, 48, 0.35) !important;
+    outline: none !important;
+}
+
+.form-select option {
+    background-color: #1d1035 !important;
+    color: #ffffff !important;
+}
+
+.form-label {
+    color: #a692c2 !important;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+}
+
+/* Neon buttons */
+.btn-success {
+    background: linear-gradient(135deg, #00c851 0%, #009638 100%) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 15px rgba(0, 200, 81, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 200, 81, 0.5) !important;
+}
+
+.btn-outline-secondary {
+    color: #a692c2 !important;
+    border: 1px solid rgba(181, 95, 230, 0.25) !important;
+    border-radius: 10px !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-outline-secondary:hover {
+    background: rgba(181, 95, 230, 0.1) !important;
+    color: #ffffff !important;
+    border-color: rgba(181, 95, 230, 0.5) !important;
+}

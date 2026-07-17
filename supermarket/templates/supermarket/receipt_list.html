@@ -1,0 +1,68 @@
+{% extends 'supermarket/base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Receipts</h2>
+    <a href="{% url 'pos_sale' %}" class="btn btn-primary"><i class="fas fa-cash-register me-2"></i>New Sale</a>
+</div>
+
+<!-- Total Revenue Card -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(177,16,187,0.12);color:var(--brand-purple);"><i class="fas fa-wallet"></i></div>
+            <div class="stat-value" style="color:var(--brand-purple);">KES {{ total|floatformat:2 }}</div>
+            <div class="stat-label">Total Receipts Value</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-receipt"></i></div>
+            <div class="stat-value">{{ receipts|length }}</div>
+            <div class="stat-label">Total Receipts</div>
+        </div>
+    </div>
+</div>
+
+<div class="data-card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Receipt #</th>
+                <th>Cashier</th>
+                <th>Subtotal</th>
+                <th>Tax</th>
+                <th>Grand Total</th>
+                <th>Paid</th>
+                <th>Change</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for receipt in receipts %}
+            <tr>
+                <td style="font-weight:500;">{{ receipt.receipt_number }}</td>
+                <td style="color:var(--muted);">{{ receipt.cashier|default:"—" }}</td>
+                <td>KES {{ receipt.total_amount }}</td>
+                <td>KES {{ receipt.tax_amount }}</td>
+                <td style="color:var(--green);font-weight:600;">KES {{ receipt.grand_total }}</td>
+                <td>KES {{ receipt.amount_paid }}</td>
+                <td>KES {{ receipt.change_given }}</td>
+                <td style="color:var(--muted);font-size:0.85rem;">{{ receipt.created_at|date:"M d, Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'receipt_detail' receipt.pk %}" class="btn btn-sm btn-outline-secondary" title="View">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="{% url 'receipt_detail' receipt.pk %}?print=thermal" class="btn btn-sm btn-outline-secondary" title="Print">
+                        <i class="fas fa-print"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="9" style="color:var(--muted);text-align:center;padding:40px;">No receipts yet. <a href="{% url 'pos_sale' %}" style="color:var(--brand-purple);">Start a sale</a></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

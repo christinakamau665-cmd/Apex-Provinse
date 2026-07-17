@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Provisions Manager</title>
+    <link rel="icon" type="image/png" href="https://images.unsplash.com/photo-1746422125977-7a5a63f052e7?w=64&auto=format&fit=crop&q=80&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODV8fHB1cnBsZSUyMGFuZCUyMHdoaXRlJTIwbG9nb3xlbnwwfHwwfHx8MA%3D%3D">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+        :root {
+            --green: #2e7d32; /* Rich forest green for readable alerts */
+            --dark: #f3f0f7; /* Very light lavender-grey background */
+            --card: #ffffff; /* Crisp white for cards */
+            --border: #dfd5ed; /* Soft purple border */
+            --text: #2f1d4a; /* Deep violet-purple for clear text readability */
+            --muted: #796893; /* Medium lavender for muted labels */
+            --brand-purple: #b110bb; /* Bright, vivid purple accent */
+            --brand-purple-hover: #850c8d; /* Slightly deeper purple on hover */
+            --sidebar-bg: #eae3f2; /* Soft light-purple background for sidebar */
+
+            /* Aliases kept in sync with the brand palette above so every
+               template (including the customer chat pages) resolves to the
+               same look, even where they reference older variable names. */
+            --primary: var(--brand-purple);
+            --body-fg: var(--text);
+            --body-loud-color: var(--text);
+            --border-color: var(--border);
+            --darkened-bg: rgba(177,16,187, 0.1);
+            --error-fg: #dc2626;
+            --message-error-bg: rgba(220, 38, 38, 0.1);
+            --message-warning-bg: rgba(245, 158, 11, 0.12);
+            --message-success-bg: rgba(46, 125, 50, 0.1);
+            --amber: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--dark);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-brand h1 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: var(--brand-purple);
+            margin: 0;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        .sidebar-brand span {
+            color: var(--text);
+        }
+
+        .nav-section {
+            padding: 16px 16px 8px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--brand-purple);
+            font-weight: 700;
+        }
+
+        .sidebar .nav-link {
+            color: var(--muted);
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin: 2px 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: var(--text);
+            background: rgba(177,16,187, 0.08); /* Semi-transparent brand purple */
+        }
+
+        .sidebar .nav-link.active {
+            color: var(--brand-purple);
+            font-weight: 600;
+        }
+
+        .sidebar .nav-link i {
+            width: 18px;
+            text-align: center;
+        }
+
+        .sidebar-account {
+            margin-top: auto;
+            padding: 14px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .sidebar-account-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .sidebar-account-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--brand-purple);
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-account-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 110px;
+        }
+
+        .sidebar-account-role {
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        .sidebar-account-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logout-form {
+            margin: 0;
+        }
+
+        .sidebar-account-link {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .sidebar-account-link:hover {
+            background: rgba(177,16,187, 0.1);
+            color: var(--brand-purple);
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 32px;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .page-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin: 0;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card:hover {
+            border-color: var(--brand-purple);
+            box-shadow: 0 10px 15px -3px rgba(177,16,187, 0.1);
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(177,16,187, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-purple);
+            font-size: 1.1rem;
+            margin-bottom: 14px;
+        }
+
+        .stat-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .data-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+        }
+
+        .table {
+            color: var(--text);
+            margin: 0;
+        }
+
+        .table th {
+            color: var(--muted);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-color: var(--border);
+            font-weight: 600;
+            padding: 12px 20px;
+        }
+
+        .table td {
+            border-color: var(--border);
+            padding: 12px 20px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(177,16,187, 0.02);
+        }
+
+        .badge-low {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .badge-ok {
+            background: rgba(46, 125, 50, 0.1);
+            color: var(--green);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .badge-warn {
+            background: rgba(245, 158, 11, 0.12);
+            color: #b45309;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: var(--brand-purple);
+            border-color: var(--brand-purple);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: var(--brand-purple-hover);
+            border-color: var(--brand-purple-hover);
+            color: #fff;
+        }
+
+        .btn-outline-secondary {
+            border-color: var(--border);
+            color: var(--muted);
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .form-control,
+        .form-select {
+            background: #fff;
+            border-color: var(--border);
+            color: var(--text);
+            border-radius: 8px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background: #fff;
+            border-color: var(--brand-purple);
+            color: var(--text);
+            box-shadow: 0 0 0 3px rgba(177,16,187, 0.15);
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: 1px solid transparent;
+        }
+
+        .alert-success {
+            background: rgba(46, 125, 50, 0.1);
+            border-color: rgba(46, 125, 50, 0.2);
+            color: var(--green);
+        }
+
+        .alert-danger {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: rgba(220, 38, 38, 0.2);
+            color: #dc2626;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <h1><img src="https://images.unsplash.com/photo-1746422125977-7a5a63f052e7?w=120&h=120&auto=format&fit=crop&q=80&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODV8fHB1cnBsZSUyMGFuZCUyMHdoaXRlJTIwbG9nb3xlbnwwfHwwfHx8MA%3D%3D" alt="" class="sidebar-logo">Apex <span>Provisions</span></h1>
+        </div>
+        <div class="nav-section">Main Menu</div>
+        <nav class="nav flex-column">
+            <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'pos_sale' %}active{% endif %}" href="{% url 'pos_sale' %}"><i class="fa-solid fa-cash-register"></i> POS / New Sale</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'barcode_scanner' %}active{% endif %}" href="{% url 'barcode_scanner' %}"><i class="fa-solid fa-barcode"></i> Scan Barcode</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'receipt_list' %}active{% endif %}" href="{% url 'receipt_list' %}"><i class="fa-solid fa-receipt"></i> Receipts</a>
+        </nav>
+
+        <div class="nav-section">Inventory</div>
+        <nav class="nav flex-column">
+            <a class="nav-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}" href="{% url 'product_list' %}"><i class="fa-solid fa-boxes-stacked"></i> Products</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}" href="{% url 'category_list' %}"><i class="fa-solid fa-tags"></i> Categories</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'supplier_list' %}active{% endif %}" href="{% url 'supplier_list' %}"><i class="fa-solid fa-truck"></i> Suppliers</a>
+        </nav>
+
+        <div class="nav-section">Sales &amp; Support</div>
+        <nav class="nav flex-column">
+            <a class="nav-link {% if request.resolver_match.url_name == 'sale_list' %}active{% endif %}" href="{% url 'sale_list' %}"><i class="fa-solid fa-chart-simple"></i> Sales</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'customer_chat_list' %}active{% endif %}" href="{% url 'customer_chat_list' %}"><i class="fa-solid fa-comments"></i> Customer Chat</a>
+        </nav>
+
+        {% if user.is_authenticated %}
+        <div class="sidebar-account">
+            <div class="sidebar-account-info">
+                <div class="sidebar-account-avatar">{{ user.username|first|upper }}</div>
+                <div>
+                    <div class="sidebar-account-name">{{ user.username }}</div>
+                    <div class="sidebar-account-role">Administrator</div>
+                </div>
+            </div>
+            <div class="sidebar-account-actions">
+                {% if user.is_staff %}
+                <a href="/admin/" class="sidebar-account-link" title="Django Admin"><i class="fa-solid fa-gear"></i></a>
+                {% endif %}
+                <form method="post" action="{% url 'logout' %}" class="sidebar-logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="sidebar-account-link" title="Log out"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </aside>
+
+    <main class="main-content">
+        {% block content %}
+        <div class="page-header">
+            <h2 class="page-title">Dashboard Overview</h2>
+        </div>
+        <p>Welcome to Apex Provisions Manager. Start customising this space!</p>
+        {% endblock %}
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+{% extends 'supermarket/base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Chat with Manager</h2>
+    <span style="color: var(--muted); font-size: 0.85rem;">Send a message from home</span>
+</div>
+
+<div class="data-card mt-3" style="max-width: 800px; margin: 0 auto;">
+    <div class="data-card-header">New Inquiry Form</div>
+    <div class="p-4">
+        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+            Use this form to ask about product availability, place an order, or request delivery. Our manager will respond as soon as possible.
+        </p>
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="id_customer_name" class="form-label" style="font-weight: 600; color: var(--body-loud-color);">Name</label>
+                    <input type="text" name="customer_name" id="id_customer_name" class="form-control" placeholder="Your name" style="border-radius: 8px; padding: 10px;" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="id_customer_phone" class="form-label" style="font-weight: 600; color: var(--body-loud-color);">Phone / WhatsApp</label>
+                    <input type="text" name="customer_phone" id="id_customer_phone" class="form-control" placeholder="Phone or WhatsApp number" style="border-radius: 8px; padding: 10px;">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="id_customer_email" class="form-label" style="font-weight: 600; color: var(--body-loud-color);">Email (optional)</label>
+                    <input type="email" name="customer_email" id="id_customer_email" class="form-control" placeholder="Your email (optional)" style="border-radius: 8px; padding: 10px;">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="id_product" class="form-label" style="font-weight: 600; color: var(--body-loud-color);">Product (optional)</label>
+                    <select name="product" id="id_product" class="form-select" style="border-radius: 8px; padding: 10px;">
+                        <option value="">-----------</option>
+                        {% for prod in products %}
+                            <option value="{{ prod.id }}">{{ prod.name }} - KES {{ prod.price }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <label for="id_subject" class="form-label" style="font-weight: 600; color: var(--body-loud-color);">Subject</label>
+                    <input type="text" name="subject" id="id_subject" class="form-control" placeholder="What are you interested in? (e.g. Stock inquiry)" style="border-radius: 8px; padding: 10px;">
+                </div>
+
+                <div class="col-12">
+                    <label for="id_message" class="form-label" style="font-weight: 600; color: var(--body-loud-color);">Message</label>
+                    <textarea name="message" id="id_message" rows="5" class="form-control" placeholder="Describe your order or question..." style="border-radius: 8px; padding: 10px;" required></textarea>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-success px-4" style="font-weight: 600; border-radius: 8px; padding: 10px 20px;">
+                    Send Message
+                </button>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary" style="font-weight: 600; border-radius: 8px; padding: 10px 20px; text-decoration: none;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
